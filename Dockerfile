@@ -6,12 +6,11 @@ ARG PORT=3000
 
 FROM node:${NODE_VERSION}-alpine as base
 
-WORKDIR /
+WORKDIR /app
 
 FROM base as build
 
-COPY package.json /
-COPY pnpm-lock.yaml /
+COPY package.json pnpm-lock.yaml ./
 
 # Install pnpm
 RUN npm install -g pnpm
@@ -19,11 +18,10 @@ RUN npm install -g pnpm
 # Install all depencies
 RUN pnpm install
 
-ADD . /
+COPY . .
 
 # Add ARG
 ARG NUXT_API_ENTREPRISES_GOUV
-
 
 # Add ENV
 ENV NUXT_API_ENTREPRISES_GOUV=$NUXT_API_ENTREPRISES_GOUV
@@ -32,8 +30,10 @@ RUN pnpm run build
 
 FROM base
 
+WORKDIR /app
+
 EXPOSE $PORT
 
-COPY --from=build /.output /.output
+COPY --from=build /app/.output ./.output
 
 CMD ["node", ".output/server/index.mjs"]
