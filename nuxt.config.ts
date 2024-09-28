@@ -30,7 +30,10 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
     public: {
-      apiEntreprises: process.env.NUXT_API_ENTREPRISES_GOUV
+      apiEntreprises: process.env.NUXT_API_ENTREPRISES_GOUV,
+      apiAccesLibre: process.env.NUXT_API_ACCES_LIBRE,
+      apiAccesLibreKey: process.env.NUXT_API_ACCES_LIBRE_KEY,
+      apiGeo: process.env.NUXT_API_GEO
     }
   },  
   modules: [
@@ -38,7 +41,8 @@ export default defineNuxtConfig({
     '@primevue/nuxt-module',
     '@nuxtjs/robots',
     '@pinia/nuxt',
-    '@nuxt/content'
+    '@nuxt/content',
+    '@nuxtjs/leaflet'
   ],
   primevue: {
     options: {
@@ -51,4 +55,7 @@ export default defineNuxtConfig({
   tailwindcss: {
     configPath: '~/tailwind.mjs'
   },
+  css: [
+    'primeicons/primeicons.css',
+  ]
 })

@@ -7,9 +7,14 @@ const items = ref([
     },
     {
         label: 'Entreprises',
-        icon: 'pi pi-star',
+        icon: 'pi pi-building',
         route: '/entreprises'
-    }   
+    },
+    {
+        label: 'Accès Libre',
+        icon: 'pi pi-circle',
+        route: '/acces-libre'
+    }
 ]);
 </script>
 

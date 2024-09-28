@@ -7,7 +7,20 @@ export default function() {
         baseURL: config.public.apiEntreprises
     })
 
+    const axiosAccesLibre = axios.create({
+        baseURL: config.public.apiAccesLibre,
+        headers: {
+            "Authorization": config.public.apiAccesLibreKey
+        }
+    })
+
+    const axiosGeo = axios.create({
+        baseURL: config.public.apiGeo
+    })
+
     return {
-        axiosEntreprises
+        axiosEntreprises,
+        axiosAccesLibre,
+        axiosGeo
     }
 }
