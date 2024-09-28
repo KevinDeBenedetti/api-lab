@@ -24,6 +24,7 @@ export default defineNuxtConfig({
   site: { indexable: false },
   robots: {
     disallow: '*',
+    allow: '*',
   },
   compatibilityDate: '2024-09-26',
   devtools: { enabled: true },
