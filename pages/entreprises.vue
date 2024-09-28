@@ -45,8 +45,8 @@ const loadEntreprises = async (page = 1, rowsPerPage = 10, naf = '', departement
 
 // Gestion du changement de page
 const onPage = (event) => {
-  const page = event.page + 1; // PrimeVue utilise une indexation des pages à partir de 0
-  loadEntreprises(page, event.rows, selectedNaf.value?.code, selectedDepartement.value?.code, selectedPostalCode.value);
+    const page = event.page + 1; // PrimeVue utilise une indexation des pages à partir de 0
+    loadEntreprises(page, event.rows, selectedNaf.value?.code, selectedDepartement.value?.code, selectedPostalCode.value);
 };
 
 const onSearch = () => {
@@ -92,67 +92,71 @@ onMounted(() => {
                 </ul>
             </Panel>
 
-            <DataTable
-                :value="entreprises"
-                paginator
-                :rows="rows"
-                :totalRecords="totalResults"
-                :rowsPerPageOptions="[10, 20]"
-                tableStyle="min-width: 50rem"
-                :lazy="true"
-                @page="onPage"
-            >
-                <Column field="nom_complet" header="Nom complet"></Column>
-                <Column field="siege" header="Siège">
-                    <template #body="slotProps">
-                        <span>{{ slotProps.data.siege.libelle_commune }} ({{ slotProps.data.siege.code_postal }})</span>
-                    </template>
-                </Column>
-                <Column field="categorie_entreprise" header="Catégorie"></Column>
-                <Column field="activite_principale" header="NAF"></Column>
-                <Column field="siren" header="SIREN"></Column>
-                <Column field="" header="Détail">
-                    <template #body="slotProps">
-                        <Button label="Détail" @click="showDetails(slotProps.data)" />
-                    </template>
-                </Column>
-            </DataTable>
+                <Panel class="my-6" header="Résultats">
+                    <DataTable
+                        :value="entreprises"
+                        paginator
+                        :rows="rows"
+                        :totalRecords="totalResults"
+                        :rowsPerPageOptions="[10, 20]"
+                        tableStyle="min-width: 50rem"
+                        :lazy="true"
+                        @page="onPage"
+                    >
+                        <Column field="nom_complet" header="Nom complet"></Column>
+                        <Column field="siege" header="Siège">
+                            <template #body="slotProps">
+                                <span>{{ slotProps.data.siege.libelle_commune }} ({{ slotProps.data.siege.code_postal }})</span>
+                            </template>
+                        </Column>
+                        <Column field="categorie_entreprise" header="Catégorie"></Column>
+                        <Column field="activite_principale" header="NAF"></Column>
+                        <Column field="siren" header="SIREN"></Column>
+                        <Column field="" header="Détail">
+                            <template #body="slotProps">
+                                <Button label="Détail" @click="showDetails(slotProps.data)" />
+                            </template>
+                        </Column>
+                    </DataTable>
 
-            <!-- Modal avec les informations d'une entreprise -->
-            <Dialog v-if="selectedEntreprise" :header="selectedEntreprise.nom_complet" v-model:visible="displayDialog" modal>
-                <div>
-                    <h3 class="text-lg text-gray-400 font-bold">Siège</h3>
-                        <ul class="mt-2 ml-6">
-                            <li><strong>Raison sociale :</strong> {{ selectedEntreprise.nom_raison_sociale }}</li>
-                            <li><strong>SIREN :</strong> {{ selectedEntreprise.siren }}</li>
-                            <li><strong>Adresse :</strong> {{ selectedEntreprise.siege.libelle_commune }} ({{ selectedEntreprise.siege.code_postal }})</li>
-                            <li><strong>Catégorie :</strong> {{ selectedEntreprise.categorie_entreprise }}</li>
-                            <li><strong>Date de création :</strong> {{ formatDate(selectedEntreprise.date_creation) }}</li>
-                            <li><strong>Effectif :</strong> {{ selectedEntreprise.tranche_effectif_salarie }}</li>
-                            <li><strong>Code NAF :</strong> {{ selectedEntreprise.activite_principale }}</li>
-                        </ul>
-                </div>
+                    <!-- Modal avec les informations d'une entreprise -->
+                    <Dialog v-if="selectedEntreprise" :header="selectedEntreprise.nom_complet" v-model:visible="displayDialog" modal>
+                        <div>
+                            <h3 class="text-lg text-gray-400 font-bold">Siège</h3>
+                                <ul class="mt-2 ml-6">
+                                    <li><strong>Raison sociale :</strong> {{ selectedEntreprise.nom_raison_sociale }}</li>
+                                    <li><strong>SIREN :</strong> {{ selectedEntreprise.siren }}</li>
+                                    <li><strong>Adresse :</strong> {{ selectedEntreprise.siege.libelle_commune }} ({{ selectedEntreprise.siege.code_postal }})</li>
+                                    <li><strong>Catégorie :</strong> {{ selectedEntreprise.categorie_entreprise }}</li>
+                                    <li><strong>Date de création :</strong> {{ formatDate(selectedEntreprise.date_creation) }}</li>
+                                    <li><strong>Effectif :</strong> {{ selectedEntreprise.tranche_effectif_salarie }}</li>
+                                    <li><strong>Code NAF :</strong> {{ selectedEntreprise.activite_principale }}</li>
+                                </ul>
+                        </div>
 
-                <Divider />
+                        <Divider />
 
-                <div v-if="selectedEntreprise.matching_etablissements && selectedEntreprise.matching_etablissements.length  > 0" >
-                    <h3 class="text-lg text-gray-400 font-bold">Établissements secondaires</h3>
+                        <div v-if="selectedEntreprise.matching_etablissements && selectedEntreprise.matching_etablissements.length  > 0" >
+                            <h3 class="text-lg text-gray-400 font-bold">Établissements secondaires</h3>
 
-                    <div v-for="etablissement_secondaire in selectedEntreprise.matching_etablissements">
-                        <ul class="mt-2 ml-6">
-                            <li><strong>SIRET :</strong> {{ etablissement_secondaire.siret }}</li>
-                            <li><strong>Adresse :</strong> {{ etablissement_secondaire.adresse }}</li>
-                            <li><strong>Code NAF :</strong> {{ etablissement_secondaire.activite_principale }}</li>
-                            <li><strong>Date de création :</strong> {{ formatDate(etablissement_secondaire.date_creation) }}</li>
-                        </ul>
-                    </div>
+                            <div v-for="etablissement_secondaire in selectedEntreprise.matching_etablissements">
+                                <ul class="mt-2 ml-6">
+                                    <li><strong>SIRET :</strong> {{ etablissement_secondaire.siret }}</li>
+                                    <li><strong>Adresse :</strong> {{ etablissement_secondaire.adresse }}</li>
+                                    <li><strong>Code NAF :</strong> {{ etablissement_secondaire.activite_principale }}</li>
+                                    <li><strong>Date de création :</strong> {{ formatDate(etablissement_secondaire.date_creation) }}</li>
+                                </ul>
+                            </div>
 
-                </div>
+                        </div>
 
-                <div v-else>
-                    <p>Pas d'Établissements secondaires</p>
-                </div>
-            </Dialog>
+                        <div v-else>
+                            <p>Pas d'Établissements secondaires</p>
+                        </div>
+                    </Dialog>
+            </Panel>
+
+
         </div>
     </section>
 </template>
