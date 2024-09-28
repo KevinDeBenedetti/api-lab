@@ -25,3 +25,6 @@ logs
 
 # Docker
 compose.yaml
+compose.prod.yaml
+
+secrets.md

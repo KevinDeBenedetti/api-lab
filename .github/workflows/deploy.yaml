@@ -34,3 +34,26 @@ jobs:
 
         - name: Logout from GHCR
           run: docker logout ghcr.io
+
+    deploy:
+      needs: [ghcr]
+      runs-on: ubuntu-latest
+      steps:
+        - name: Deploy using ssh
+          uses: appleboy/ssh-action@v1.0.3
+          with:
+            host: ${{ secrets.SSH_HOST }}
+            username: ${{ secrets.SSH_USERNAME }}   
+            key: ${{ secrets.SSH_KEY }}
+            port: ${{ secrets.SSH_PORT }}
+            script: |
+              docker stack rm api-lab_stack
+              cd api-lab/
+              docker pull ghcr.io/${{ vars.repository_owner }}/api-lab:latest
+
+              docker stack deploy -c compose.prod.yaml api-lab_stack
+
+              docker container prune -f
+              docker image prune -f
+              
+              docker logout ghcr.io    
