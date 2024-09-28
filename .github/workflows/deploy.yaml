@@ -1,0 +1,36 @@
+name: Deploy API Lab
+
+on:
+    push:
+      branches:
+        - main
+
+jobs:
+    ghcr:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            packages: write
+            attestations: write
+            id-token: write
+
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Log in to GitHub Container Registry
+          uses: docker/login-action@v3
+          with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Build and push App Docker image
+          run: |
+            docker build \
+            --build-arg NUXT_API_ENTREPRISES_GOUV="${{ secrets.NUXT_API_ENTREPRISES_GOUV }}" \
+            -t ghcr.io/${{ vars.repository_owner }}/api-lab:latest ./
+            docker push ghcr.io/${{ vars.repository_owner }}/api-lab::latest
+
+        - name: Logout from GHCR
+          run: docker logout ghcr.io
