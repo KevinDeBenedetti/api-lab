@@ -24,7 +24,16 @@ const show = async (value: string) => {
 </script>
 
 <template>
-  <div>
+  <Panel class="my-6" header="Filtres de recherche" toggleable>
+    <div class="flex flex-col sm:flex-row gap-6">
+      <AutoComplete :pt="{ input: { class: 'w-full' } }" v-model="value" :suggestions="mappedCities" @complete="search($event)" placeholder="Saisir une commune"/>
+      <Button  label="Rechercher" @click="show(value)"/>
+    </div>
+
+  </Panel>
+
+  <!--
+    <div>
     <Card class="mt-10 lg:mt-0">
       <template #title>Recherche</template>
       <template #content>
@@ -35,4 +44,6 @@ const show = async (value: string) => {
       </template>
     </Card>
   </div>
+  -->
+
 </template>

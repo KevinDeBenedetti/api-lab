@@ -72,7 +72,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <section class="px-6 m-auto mt-28">
+    <section class="px-6 mt-28 xl:w-4/5 mx-auto">
         <h1 class="mt-16 text-4xl text-primary font-bold">Entreprises</h1>
         <div>
             <Panel class="my-6" header="Filtres de recherche" toggleable>

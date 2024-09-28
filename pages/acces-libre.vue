@@ -6,9 +6,9 @@ useSeoMeta({
 </script>
 
 <template>
-  <section class="px-6 mt-28 sm:w-4/5 mx-auto">
-    <Acces-libreSearch />
+  <section class="px-6 mt-28 xl:w-4/5 mx-auto">
     <Acces-libreIntro />
+    <Acces-libreSearch />
     <Acces-libreList />
   </section>
 </template>
