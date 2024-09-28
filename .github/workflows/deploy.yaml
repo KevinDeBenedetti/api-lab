@@ -30,7 +30,7 @@ jobs:
             docker build \
             --build-arg NUXT_API_ENTREPRISES_GOUV="${{ secrets.NUXT_API_ENTREPRISES_GOUV }}" \
             -t ghcr.io/${{ vars.repository_owner }}/api-lab:latest ./
-            docker push ghcr.io/${{ vars.repository_owner }}/api-lab::latest
+            docker push ghcr.io/${{ vars.repository_owner }}/api-lab:latest
 
         - name: Logout from GHCR
           run: docker logout ghcr.io
