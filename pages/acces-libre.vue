@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: "Accès Libre | Établissements",
+  title: "Accès Libre | API Lab",
   description: "Liste des établissements."
 });
 </script>
@@ -8,7 +8,9 @@ useSeoMeta({
 <template>
   <section class="px-6 mt-28 xl:w-4/5 mx-auto">
     <Acces-libreIntro />
-    <Acces-libreSearch />
     <Acces-libreList />
+    <!--
+    <Acces-libreSearch />
+    -->
   </section>
 </template>

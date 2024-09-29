@@ -1,95 +1,82 @@
 <script setup lang="ts">
-const accessLibreStore = useAccessLibreStore();
-const geoStore = useGeoStore();
-
+// Variables
 const erps: any = ref(null);
-const erpsCount: any = ref(null);
-const townName: any = ref(null);
-const postalCode: any = ref(null);
+const rows = ref(10);
+const totalResults = ref(0);
+// States
+// const codeInsee = computed(() => geoStore.codeInsee);
+const codeInsee = ref('13047');
+// Pagination
+const nextPage = ref(null);
+const currentPage = ref(1);
 
-onMounted(async () => {
-  erpsCount.value = accessLibreStore.state.erpsCount;
-  townName.value = geoStore.state.townName;
-  // postalCode.value = mapStore.state.codeInsee;
-
-  const codeInsee: any = geoStore.state.codeInsee;
-  const erpsGenerator = accessLibreStore.getERPSbyPostalCode(codeInsee);
-
-  erps.value = [];
-
-  for await (const chunk of erpsGenerator) {
-    erps.value = [...chunk];
+// Charger les données initiales
+const loadData = async (event = null) => {
+  const { axiosAccesLibre } = useAxios();
+  let url = `/erps/?rows=${rows.value}&page=${currentPage.value}`;
+  
+  // Si c'est une page suivante, utiliser l'URL de la page suivante
+  if (nextPage.value && event && event.page) {
+    url = `/erps/?rows=${rows.value}&page=${event.page + 1}`;
+    currentPage.value = event.page + 1;
   }
+
+  try {
+    const response = await axiosAccesLibre.get(url);
+    totalResults.value = response.data.count;  // Mettre à jour le nombre total de résultats
+    erps.value = response.data.results;  // Mettre à jour les données
+
+    // Mettre à jour la prochaine page si elle existe
+    nextPage.value = response.data.next;
+  } catch (error) {
+    console.error(error);
+  }
+}
+onMounted(async () => {
+  loadData();
+
+  // const { axiosAccesLibre } = useAxios();
+  //   try {
+  //       const response = await axiosAccesLibre.get(`/erps/`);
+  //       console.log(response.data.next)
+  //       totalResults.value = response.data.count
+  //       erps.value = response.data.results
+  //   } catch(error) {
+  //       console.log(error)
+  //   }
+    // const { axiosAccesLibre } = useAxios();
+    // try {
+    //     const response = await axiosAccesLibre.get(`/erps/?code_insee=${codeInsee.value}`);
+    //     totalResults.value = response.data.count
+    //     erps.value = response.data.results
+    // } catch(error) {
+    //     console.log(error)
+    // }
 });
 </script>
 
 <template>
-  <div class="sm:w-4/5 mx-auto">
-
-    <div v-if="erps === null || erps.length === 0" class="flex justify-center items-center h-screen">
-      <ProgressSpinner />
-    </div>
-
-    <DataView v-else :value="erps" paginator :pageLinkSize="1" :rows="10" dataKey="id" class="my-8">
-
-      <template #list="slotProps">
-
-        <div class="grid grid-nogutter">
-
-          <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
-
-            <div class="my-4 mx-2 sm:mx-10 border-b-2 sm:flex justify-between">
-
-              <div>
-
-                <Chip class="bg-[#C2E0FAC9] border-2 border-[#2093F750] text-center text-xs" :label="item.activite.nom" />
-
-                <h4 class="ml-4 text-xl mt-2">{{ item.nom }}</h4>
-
-                <p class="ml-4 text-sm text-gray-400 font-light">{{ item.adresse }}</p>
-
-              </div>
-
-              <div class="flex justify-center items-center my-4 sm:w-3/5">
-
-                <a href="#searchMap" class="mr-2">
-                  <Button icon="pi pi-map-marker" label="Voir carte" severity="secondary"></Button>
-                </a>
-
-                <a v-if="item.site_internet !== '' && item.site_internet !== null" :href="item.site_internet" target="_blank">
-                  <Button icon="pi pi-external-link" label="Site Web"></Button>
-                </a>
-
-                <a v-else href="#">
-                  <Button icon="pi pi-question" label="Ajouter" severity="secondary"></Button>
-                </a>
-
-              </div>
-
-            </div>
-
-            <!--            <div class="hidden flex items-center justify-between m-4 w-auto border-b-2 pb-4">
-                          <div class="w-1/5 flex justify-center">
-                            <Chip class="bg-[#C2E0FAC9] border-2 border-[#2093F750] text-center" :label="item.activite.nom" />
-                          </div>
-
-                          <div class="flex flex-col w-3/5 justify-start items-start pl-10">
-            &lt;!&ndash;                <Chip class="absolute top-[-36px] left-[0px]" :label="item.activite.nom" />&ndash;&gt;
-                            <h4 class="text-xl mt-2">{{ item.nom }}</h4>
-                            <p class="text-sm">{{ item.adresse }}</p>
-                          </div>
-                          <div class="flex justify-center w-1/5">
-                            <a v-if="item.site_internet !== '' && item.site_internet !== null" :href="item.site_internet" target="_blank">
-                              <Button icon="pi pi-external-link" label="Site Web"></Button>
-                            </a>
-                            <Button v-else icon="pi pi-question" label="Ajouter" severity="secondary"></Button>
-                          </div>
-                        </div>-->
-
-          </div>
-        </div>
-      </template>
-    </DataView>
-
-  </div>
+    <Panel class="my-6" header="Résultats">
+        <DataTable
+            :value="erps"
+            paginator
+            :rows="rows"
+            :totalRecords="totalResults"
+            :rowsPerPageOptions="[10, 20]"
+            tableStyle="min-width: 50rem"
+            :lazy="true"
+            @page="loadData"
+        >
+            <Column field="nom" header="Nom"></Column>
+            <Column field="commune" header="Commune"></Column>
+            <Column field="code_postal" header="Code Postal"></Column>
+            <Column field="site_internet" header="Site Web">
+                <template #body="slotProps">
+                    <a :href="slotProps.data.site_internet" target="_blank" rel="noopener noreferrer">
+                        <Button label="Site Web" />
+                    </a>
+                </template>
+            </Column>
+        </DataTable>
+    </Panel>
 </template>

@@ -1,4 +1,9 @@
 <script setup lang="ts">
+useSeoMeta({
+  title: "Entreprises | API Lab",
+  description: "Liste des entreprises de l'API Gouv Entreprises."
+});
+
 const entreprisesStore = useEntreprisesStore();
 const entreprises = ref();
 const rows = ref(10);

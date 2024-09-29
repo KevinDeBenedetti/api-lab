@@ -1,4 +1,8 @@
 <script setup lang="ts">
+useSeoMeta({
+  title: "Accueil | API Lab",
+  description: "Accueil API Lab, liste des API utilisées."
+});
 </script>
 
 <template>
