@@ -6,7 +6,7 @@ services:
     restart: always
     expose:
       - 3000
-    network:
+    networks:
       - dokploy-network
     labels:
       - traefik.enable=true
