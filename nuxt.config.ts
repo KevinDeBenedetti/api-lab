@@ -30,10 +30,10 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
     public: {
-      apiEntreprises: process.env.NUXT_API_ENTREPRISES_GOUV,
-      apiAccesLibre: process.env.NUXT_API_ACCES_LIBRE,
+      apiEntreprises: 'https://recherche-entreprises.api.gouv.fr',
+      apiAccesLibre: 'https://acceslibre.beta.gouv.fr/api',
       apiAccesLibreKey: process.env.NUXT_API_ACCES_LIBRE_KEY,
-      apiGeo: process.env.NUXT_API_GEO
+      apiGeo: 'https://geo.api.gouv.fr'
     }
   },  
   modules: [

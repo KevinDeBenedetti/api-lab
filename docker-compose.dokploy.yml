@@ -1,0 +1,19 @@
+services:
+
+  nuxt:
+    image: ghcr.io/kevindebenedetti/api-lab:latest
+    pull_policy: always
+    restart: always
+    expose:
+      - 3000
+    network:
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.nuxt-app.rule=Host(`api-lab.kevindb.dev`)
+      - traefik.http.routers.nuxt-app.entrypoints=web
+      - traefik.http.services.nuxt-app.loadbalancer.server.port=3000
+
+networks:
+  dokploy-network:
+    external: true

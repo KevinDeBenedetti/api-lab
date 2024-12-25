@@ -1,39 +1,28 @@
 # syntax=docker/dockerfile:1
 
-ARG NODE_VERSION=21.0.0
+FROM node:lts-alpine AS base
 
-ARG PORT=3000
-
-FROM node:${NODE_VERSION}-alpine as base
+RUN npm install -g npm@latest && npm install -g pnpm@latest
 
 WORKDIR /app
 
-FROM base as build
+FROM base AS build
 
 COPY package.json pnpm-lock.yaml ./
 
-# Install pnpm
-RUN npm install -g pnpm
+RUN pnpm install --frozen-lockfile
 
-# Install all depencies
-RUN pnpm install
+ADD . /app
 
-COPY . .
-
-# Add ARG
-ARG NUXT_API_ENTREPRISES_GOUV
-
-# Add ENV
-ENV NUXT_API_ENTREPRISES_GOUV=$NUXT_API_ENTREPRISES_GOUV
+ARG NUXT_API_ACCES_LIBRE_KEY
+ENV NUXT_API_ACCES_LIBRE_KEY=$NUXT_API_ACCES_LIBRE_KEY
 
 RUN pnpm run build
 
 FROM base
 
-WORKDIR /app
-
-EXPOSE $PORT
-
 COPY --from=build /app/.output ./.output
+
+EXPOSE 3000
 
 CMD ["node", ".output/server/index.mjs"]
