@@ -10,9 +10,9 @@ services:
       - dokploy-network
     labels:
       - traefik.enable=true
-      - traefik.http.routers.nuxt-app.rule=Host(`api-lab.kevindb.dev`)
-      - traefik.http.routers.nuxt-app.entrypoints=web
-      - traefik.http.services.nuxt-app.loadbalancer.server.port=3000
+      - traefik.http.routers.api-lab.rule=Host(`api-lab.kevindb.dev`)
+      - traefik.http.routers.api-lab.entrypoints=websecure
+      - traefik.http.services.api-lab.loadbalancer.server.port=3000
 
 networks:
   dokploy-network:
