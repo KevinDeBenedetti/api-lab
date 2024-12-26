@@ -1,0 +1,5 @@
+services:
+  nuxt:
+    image: ghcr.io/kevindebenedetti/api-lab:latest
+    ports:
+    - "3005:3000"
